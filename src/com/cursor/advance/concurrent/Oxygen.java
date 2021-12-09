@@ -3,21 +3,27 @@ package com.cursor.advance.concurrent;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
-import static com.cursor.advance.concurrent.H2O.BARRIER;
-import static com.cursor.advance.concurrent.H2O.moleculesCount;
 
 public class Oxygen implements Runnable {
-    CyclicBarrier cyclicBarrier = BARRIER;
+    private CyclicBarrier cyclicBarrier;
+    private int moleculesCount;
+
+    public Oxygen(CyclicBarrier cyclicBarrier, int moleculesCount) {
+        this.cyclicBarrier = cyclicBarrier;
+        this.moleculesCount = moleculesCount;
+    }
+
+    private void releaseOxygen() {
+        System.out.print("O");
+    }
 
     @Override
     public void run() {
         for (int i = 0; i < moleculesCount; i++) {
             try {
                 cyclicBarrier.await();
-                System.out.print("O");
-                if (cyclicBarrier.await() == 0) {
-                    System.out.println();
-                }
+                releaseOxygen();
+//                Thread.sleep(100);
             } catch (InterruptedException | BrokenBarrierException e) {
                 e.printStackTrace();
             }
