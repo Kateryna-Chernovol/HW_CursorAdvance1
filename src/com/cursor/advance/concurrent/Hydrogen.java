@@ -6,7 +6,7 @@ import java.util.concurrent.CyclicBarrier;
 import static com.cursor.advance.concurrent.H2O.BARRIER;
 import static com.cursor.advance.concurrent.H2O.moleculesCount;
 
-public class Oxygen implements Runnable {
+public class Hydrogen implements Runnable {
     CyclicBarrier cyclicBarrier = BARRIER;
 
     @Override
@@ -14,7 +14,7 @@ public class Oxygen implements Runnable {
         for (int i = 0; i < moleculesCount; i++) {
             try {
                 cyclicBarrier.await();
-                System.out.print("O");
+                System.out.print("H");
                 if (cyclicBarrier.await() == 0) {
                     System.out.println();
                 }
