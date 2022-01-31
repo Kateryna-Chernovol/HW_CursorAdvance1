@@ -2,35 +2,31 @@ package com.cursor.advance.concurrent;
 
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.Semaphore;
 
-//import static com.cursor.advance.concurrent.H2O.BARRIER;
-//import static com.cursor.advance.concurrent.H2O.moleculesCount;
+public class Hydrogen extends Thread {
 
-public class Hydrogen implements Runnable {
-
+    private Semaphore hydrogenBarrier;
     private CyclicBarrier cyclicBarrier;
-    private int moleculesCount;
 
-    public Hydrogen(CyclicBarrier cyclicBarrier, int moleculesCount) {
+    public Hydrogen(Semaphore hydrogenBarrier, CyclicBarrier cyclicBarrier) {
+        this.hydrogenBarrier = hydrogenBarrier;
         this.cyclicBarrier = cyclicBarrier;
-        this.moleculesCount = moleculesCount;
     }
 
     private void releaseHydrogen() {
         System.out.print("H");
-
     }
 
     @Override
     public void run() {
-        for (int i = 0; i < moleculesCount; i++) {
-            try {
-                cyclicBarrier.await();
-                releaseHydrogen();
-//                Thread.sleep(100);
-            } catch (InterruptedException | BrokenBarrierException e) {
-                e.printStackTrace();
-            }
+        try {
+            hydrogenBarrier.acquire();
+            cyclicBarrier.await();
+            releaseHydrogen();
+            hydrogenBarrier.release();
+        } catch (InterruptedException | BrokenBarrierException e) {
+            e.printStackTrace();
         }
     }
 }

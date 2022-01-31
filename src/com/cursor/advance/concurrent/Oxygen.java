@@ -2,15 +2,15 @@ package com.cursor.advance.concurrent;
 
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.Semaphore;
 
-
-public class Oxygen implements Runnable {
+public class Oxygen extends Thread {
+    private Semaphore oxygenBarrier;
     private CyclicBarrier cyclicBarrier;
-    private int moleculesCount;
 
-    public Oxygen(CyclicBarrier cyclicBarrier, int moleculesCount) {
+    public Oxygen(Semaphore oxygenBarrier, CyclicBarrier cyclicBarrier) {
+        this.oxygenBarrier = oxygenBarrier;
         this.cyclicBarrier = cyclicBarrier;
-        this.moleculesCount = moleculesCount;
     }
 
     private void releaseOxygen() {
@@ -19,14 +19,13 @@ public class Oxygen implements Runnable {
 
     @Override
     public void run() {
-        for (int i = 0; i < moleculesCount; i++) {
-            try {
-                cyclicBarrier.await();
-                releaseOxygen();
-//                Thread.sleep(100);
-            } catch (InterruptedException | BrokenBarrierException e) {
-                e.printStackTrace();
-            }
+        try {
+            oxygenBarrier.acquire();
+            cyclicBarrier.await();
+            releaseOxygen();
+            oxygenBarrier.release();
+        } catch (InterruptedException | BrokenBarrierException e) {
+            e.printStackTrace();
         }
     }
 }
