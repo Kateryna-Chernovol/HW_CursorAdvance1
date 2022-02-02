@@ -6,8 +6,8 @@ import java.util.concurrent.Semaphore;
 
 public class Hydrogen extends Thread {
 
-    private Semaphore hydrogenBarrier;
-    private CyclicBarrier cyclicBarrier;
+    private final Semaphore hydrogenBarrier;
+    private final CyclicBarrier cyclicBarrier;
 
     public Hydrogen(Semaphore hydrogenBarrier, CyclicBarrier cyclicBarrier) {
         this.hydrogenBarrier = hydrogenBarrier;
